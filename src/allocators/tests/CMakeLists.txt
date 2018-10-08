@@ -1,1 +1,1 @@
-add_pFUnit_test("BlockAllocator" "utils;allocators")
+add_pFUnit_test("Allocators" "utils;allocators")
