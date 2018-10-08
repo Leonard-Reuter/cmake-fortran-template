@@ -1,0 +1,69 @@
+module blockAllocator_test
+    use PFUNIT_MOD
+    use kinds_m, only : i4, r8
+    use blockAllocator_m, only: BlockAllocator_t
+
+    implicit none
+
+    type(BlockAllocator_t) :: blockAllocator
+    integer(i4) :: i
+    real(r8) :: ref(7) = [ (i * 1._r8, i = 1,7)]
+    real(r8), allocatable :: ref2(:)
+
+contains
+@Test
+    subroutine TestBlockAllocatorConstruction()
+        call blockAllocator%create(10)
+
+        @assertEqual(0, blockAllocator%size)
+        @assertEqual(10, size(blockAllocator%vector))
+
+        call blockAllocator%destroy()
+    end subroutine TestBlockAllocatorConstruction
+
+@Test
+    subroutine TestBlockAllocatorAdd()
+        call blockAllocator%create(10)
+        call blockAllocator%add(ref)
+
+        @assertEqual(7, blockAllocator%size)
+
+        call blockAllocator%destroy()
+    end subroutine TestBlockAllocatorAdd
+
+@Test
+    subroutine TestBlockAllocatorGet()
+        real(r8), allocatable :: ref2(:)
+
+        call blockAllocator%create(10)
+        call blockAllocator%add(ref)
+
+        ! next line uses automatic allocation on assign (Fortran 2008)
+        ref2 = blockAllocator%get()
+
+        @assertEqual(ref, ref2)
+
+        deallocate(ref2)
+        call blockAllocator%destroy()
+    end subroutine TestBlockAllocatorGet
+
+@Test
+    subroutine TestBlockAllocatorReallocate()
+        call blockAllocator%create(10)
+
+        call blockAllocator%add(ref)
+        call blockAllocator%add(ref)
+
+        ! next line uses automatic allocation on assign (Fortran 2008)
+        ref2 = blockAllocator%get()
+
+        @assertEqual(ref, ref2(1:7))
+        @assertEqual(ref, ref2(8:14))
+        @assertEqual(14 , blockAllocator%size)
+        @assertEqual(20 , size(blockAllocator%vector))
+
+        deallocate(ref2)
+        call blockAllocator%destroy()
+    end subroutine TestBlockAllocatorReallocate
+
+end module blockAllocator_test
