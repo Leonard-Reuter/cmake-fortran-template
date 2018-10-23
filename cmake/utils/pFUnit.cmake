@@ -7,27 +7,33 @@ if (${PFUNIT})
   # python is needed for the preprocessing
   find_program(PYTHON python)
 
-  set(PFUNIT_BUILD_PATH ${PROJECT_BINARY_DIR}/pFUnit)
+  if (DEFINED ENV{PFUNIT})
+    set(PFUNIT_BUILD_PATH $ENV{PFUNIT})
+    message("found PFUNIT in $ENV{PFUNIT}.")
+    add_custom_target(pFUnit)
+  else()
+    set(PFUNIT_BUILD_PATH ${PROJECT_BINARY_DIR}/pFUnit)
 
-  # this way, pFUnit is configured during the cmake build step
-  ExternalProject_Add(pFUnit
-    PREFIX pFUnit
-    SOURCE_DIR ${PROJECT_SOURCE_DIR}/pFUnit
-    BINARY_DIR ${PFUNIT_BUILD_PATH}
-    TMP_DIR ${PFUNIT_BUILD_PATH}/tmp
-    STAMP_DIR ${PFUNIT_BUILD_PATH}/stamp
-    CMAKE_ARGS
-          "-DCMAKE_INSTALL_PREFIX=${PFUNIT_BUILD_PATH}"
-          "-DINSTALL_PATH=${PFUNIT_BUILD_PATH}"
-          "-DCMAKE_Fortran_COMPILER=${CMAKE_Fortran_COMPILER}"
-  )
+    if (CMAKE_Fortran_COMPILER_ID STREQUAL "Intel")
+      # Avoiding global name length warnings
+      set(PFUNIT_COMPILE_FLAGS "-diag-disable 5462")
+    endif()
 
-  add_test(NAME pFUnitTest
-           COMMAND ${PFUNIT_BUILD_PATH}/tests/tests.x
-           WORKING_DIRECTORY ${PFUNIT_BUILD_PATH})
-
-  set_tests_properties(pFUnitTest
-          PROPERTIES LABELS "pFUnit;${PROJECT_NAME}")
+    # this way, pFUnit is configured during the cmake build step
+    ExternalProject_Add(pFUnit
+      PREFIX pFUnit
+      SOURCE_DIR ${PROJECT_SOURCE_DIR}/pFUnit
+      BINARY_DIR ${PFUNIT_BUILD_PATH}
+      TMP_DIR ${PFUNIT_BUILD_PATH}/tmp
+      STAMP_DIR ${PFUNIT_BUILD_PATH}/stamp
+      CMAKE_ARGS
+            "-DCMAKE_INSTALL_PREFIX=${PFUNIT_BUILD_PATH}"
+            "-DINSTALL_PATH=${PFUNIT_BUILD_PATH}"
+            "-DCMAKE_Fortran_COMPILER=${CMAKE_Fortran_COMPILER}"
+            "-DCMAKE_Fortran_FLAGS=${PFUNIT_COMPILE_FLAGS}"
+            "-DMPI=${MPI}"
+    )
+  endif()
 
   function(add_pFUnit_test moduleName libraries)
   # Input:
