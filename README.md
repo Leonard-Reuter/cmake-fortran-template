@@ -3,7 +3,7 @@ This project is aimed at jump-starting a Fortran project that can build librarie
 
 Cloning this project:
 ```
-git clone https://git.rwth-aachen.de/luechow-group/cmake-fortran-template.git
+git clone https://github.com/Libavius/cmake-fortran-template.git
 ```
 
 Initializing pFUnit:
