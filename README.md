@@ -3,29 +3,16 @@ This project is aimed at jump-starting a Fortran project that can build librarie
 
 Cloning this project:
 ```
-git clone https://github.com/Libavius/cmake-fortran-template.git
+git clone https://github.com/Leonard-Reuter/cmake-fortran-template.git
 ```
 
-Initializing pFUnit:
-```
-git submodule update --init --recursive
-```
-
-Building this project:
+Building this project and running the tests:
 ```
 cd cmake-fortran-template
 mkdir build
 cd build
 cmake ..
 make
+ctest -L allocator
 ```
 
-Building this project with pFUnit and running tests:
-```
-cd cmake-fortran-template
-mkdir build
-cd build
-cmake -DPFUNIT=ON ..
-make
-ctest
-```
