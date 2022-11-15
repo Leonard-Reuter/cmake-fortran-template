@@ -1,5 +1,5 @@
 module blockAllocator_test
-    use PFUNIT_MOD
+    use funit
     use kinds_m, only : i4, r8
     use blockAllocator_m, only: BlockAllocator_t
 

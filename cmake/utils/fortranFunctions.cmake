@@ -9,10 +9,3 @@ function(add_fortran_library LIB)
     target_include_directories(${LIB} INTERFACE ${LIB_DIR}/mod)
 endfunction(add_fortran_library)
 
-function(mark_omp)
-    set_property(SOURCE ${ARGN}
-            APPEND_STRING PROPERTY
-            COMPILE_FLAGS ${CMAKE_Fortran_OMP_FLAG}
-            )
-endfunction(mark_omp)
-

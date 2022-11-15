@@ -25,8 +25,3 @@ set(CMAKE_Fortran_FLAGS         "${FLAGS} ")
 set(CMAKE_Fortran_FLAGS_DEBUG   "${DEBUG_FLAGS}")
 set(CMAKE_Fortran_FLAGS_RELEASE "${RELEASE_FLAGS}")
 
-# sets OpenMP flags. CMAKE_Fortran_OMP_FLAG variable is custom
-if(${OPENMP})
-    set(CMAKE_Fortran_OMP_FLAG "${OPENMP_FLAGS}")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${CMAKE_Fortran_OMP_FLAG}")
-endif()
